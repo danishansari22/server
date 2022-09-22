@@ -4,27 +4,40 @@ const RoomSchema = new Schema({
     roomName: {
         type: String,
         required: true,
-        
+
     },
-    roomId:{
+    roomId: {
         type: String,
         required: true,
         unique: true
 
     },
-    maxNumber:{
-        type:Number,
-        default:10,
+    maxNumber: {
+        type: Number,
+        default: 10,
 
     },
-    member:[{
-        userId:{
-            type:String
+    members: [{
+        userId: {
+            type: String
+        },
+        userName: {
+            type: String
+        },
+        socketId: {
+            type: String
+        },
+        avatarId: {
+            type: String
         }
     }],
-    sceneId:{
-        type:String,
-        required:true
+    sceneId: {
+        type: String,
+        required: true
+    },
+    isEnded: {
+        type: Boolean,
+        default: false
     }
 })
-module.exports = mongoose.model('Rooms',RoomSchema);
+module.exports = mongoose.model('Rooms', RoomSchema);
