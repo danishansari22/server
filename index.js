@@ -20,6 +20,7 @@ app.use(cors(
 // Controls
 const { createRoom } = require('./controller/roomController');
 
+const port = 3001
 
 // app.use("/api/auth", userRoutes)
 //app.use("/api/room", roomRoutes)
@@ -160,11 +161,25 @@ io.on('connection', function (socket) {
         sessions[updateParams.roomId].members.find((member) => member.socketId == socket.id).rotation = updateParams.rotation;
         socket.to(updateParams.roomId).emit('updateData', updateParams);
     })
+
+    socket.on('disconnect', function () {
+        console.log("User Disconnected: " + socket.id)
+        for (let room in sessions) {
+            let index = sessions[room].members.findIndex((member) => member.socketId == socket.id);
+            if (index != -1) {
+                sessions[room].members.splice(index, 1);
+                socket.to(room).emit('userLeft', { userId: sessions[room].members[index].userId });
+                if (sessions[room].members.length == 0) {
+                    delete sessions[room];
+                }
+            }
+        }
+    })
 })
 
 
 
-http.listen(3001, function () {
+http.listen(port, function () {
     console.log('Server is running on port 3001');
 })
 

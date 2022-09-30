@@ -52,13 +52,27 @@ io.on('connection', function (socket) {
     socket.on('createRoom', function (roomObj) {
 
     })
-    socket.on('joinRoom', function (room) {
-        socket.join(room);
+    socket.on('joinRoom', function (data) {
+        console.log(data);
+        socket.join(data.room);
         let user = {
-            id: socket.id,
-            key: ""
+            userId: socket.id,
+            userName: data.userName,
+            roomId: data.room,
+            avatarId: 1,
+            loaded:false,
+            position: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            rotation: {
+                x: 0,
+                y: 0,
+                z: 0
+            }
         }
-        user.id = socket.id;
+        room = data.room;
         if (room in sessions) {
             sessions[room]["users"][socket.id] = user;
         }
@@ -67,11 +81,14 @@ io.on('connection', function (socket) {
             sessions[room]["users"] = {};
             sessions[room]["users"][socket.id] = user;
         }
+        console.log(socket.id + " joined room " + data.room);
+        io.to(socket.id).emit('joinedRoom', sessions[room]);
         console.log(sessions);
     })
     socket.on('update', function (data) {
-        socket.in(data.room).emit('newupdate', sessions[data.room]);
-        console.log(data);
+        sessions[data.room]["users"][socket.id] = data.user;
+        io.to(data.room).emit('newupdate', sessions[data.room]);
+        //console.log(data);
     })
     socket.on('disconnect', function (data) {
         for (let room in sessions) {
@@ -79,12 +96,12 @@ io.on('connection', function (socket) {
                 delete sessions[room]["users"][socket.id];
             }
         }
-        console.log(sessions);
+        //console.log(sessions);
     })
 })
 
-http.listen(3002, function () {
-    console.log('Server is running on port 3002');
+http.listen(3001, function () {
+    console.log('Server is running on port 3001');
 })
 /*
 const server = http.createServer((req, res) => {
