@@ -52,6 +52,7 @@ io.on('connection', function (socket) {
     socket.on('createRoom', function (roomObj) {
 
     })
+
     socket.on('joinRoom', function (data) {
         console.log(data);
         socket.join(data.room);
@@ -60,7 +61,7 @@ io.on('connection', function (socket) {
             userName: data.userName,
             roomId: data.room,
             avatarId: 1,
-            loaded:false,
+            loaded: false,
             position: {
                 x: 0,
                 y: 0,
@@ -98,9 +99,13 @@ io.on('connection', function (socket) {
         }
         //console.log(sessions);
     })
+    socket.on('join-room', (roomId, userId) => {
+        console.log(userId + " joinedroom " + roomId)
+        io.to(roomId).emit('user-connected', userId)
+    })
 })
 
-http.listen(443, function () {
+http.listen(3005, function () {
     console.log('Server is running on port 443');
 })
 /*
