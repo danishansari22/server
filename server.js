@@ -105,8 +105,13 @@ io.on('connection', function (socket) {
     })
 })
 
+<<<<<<< HEAD
 http.listen(3005, function () {
     console.log('Server is running on port 443');
+=======
+http.listen(3001, function () {
+    console.log('Server is running on port 3001');
+>>>>>>> 00a69031267241206e46253a91aebeb810ac1412
 })
 /*
 const server = http.createServer((req, res) => {
